@@ -6,9 +6,6 @@
 </div>
 <br>
 
-[![Test](https://github.com/cryptohslu/randextract/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/cryptohslu/randextract/actions/workflows/test.yml)
-[![Docs](https://github.com/cryptohslu/randextract/actions/workflows/docs.yml/badge.svg)](https://github.com/cryptohslu/randextract/actions/workflows/docs.yml)
-
 The `randextract` library is a Python 3 package implementing randomness extractors that can be used to transform
 weak random sources into almost-uniform ones. The library implements quantum-proof strong randomness extractors that can
 be used in the Privacy Amplification (PA) step of any Quantum Key Distribution (QKD) or Quantum Random Number Generator
