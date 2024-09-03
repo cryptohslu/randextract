@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools >= 61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "randextract"
+version = "0.1.0"
+description = "A reference implementation for testing & validating Privacy Amplification algorithms"
+authors = [
+    {name = "Esther Hänggi", email = "esther.haenggi@hslu.ch"},
+    {name = "Iyán Méndez Veiga", email = "iyan.mendezveiga@hslu.ch"},
+]
+dependencies = [
+    "numpy>=1.25,<2.1",
+    "galois>=0.3.6",
+    "scipy>=1.12",
+    "gmpy2<3,>=2.2.0a1",
+    "termcolor>=2.4",
+]
+requires-python = ">=3.10, <3.13"
+license = {file = "LICENSE"}
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://randextract.crypto-lab.ch"
+Issues = "https://github.com/cryptolab/randextract/issues"
+
+[project.optional-dependencies]
+dev = [
+    "jupyterlab",
+    "matplotlib",
+    "black",
+    "twine",
+    "isort",
+]
+docs = [
+    "Sphinx",
+    "sphinx-book-theme",
+    "sphinxcontrib-bibtex",
+    "sphinx-togglebutton",
+    "sphinx-tabs",
+    "sphinx-autodoc-typehints",
+]
+examples = [
+    "pyzmq",
+]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+all = ["randextract[dev,docs,examples,test]"]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "src"
+]
+
+[tool.isort]
+profile = "black"
