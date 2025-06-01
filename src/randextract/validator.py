@@ -81,19 +81,19 @@ class Validator:
                 details.
 
         Keyword Arguments:
-            command (str): (``input_method="stdio"``) Provide the command that gives the output hash to compare with the
-                reference implementation. You can use the following variables in your command: ``$INPUT_LENGTH$``,
+            command (``str``): (``input_method="stdio"``) Provide the command that gives the output hash to compare with
+                the reference implementation. You can use the following variables in your command: ``$INPUT_LENGTH$``,
                 ``$OUTPUT_LENGTH$``, ``$SEED$``, ``$INPUT$``. By default, ``$INPUT_LENGTH$`` and ``$OUTPUT_LENGTH$``
                 are passed as strings, and ``$SEED$`` and ``$INPUT$`` as bit strings (without spaces). If you want any
                 other format, check the :obj:`format_dict` kwarg.
-            format_dict (dict): (``input_method="stdio"``) A dictionary containing functions to convert the variables
-                mentioned in the command kwarg from their usual Python representation to any arbitrary format expected
-                by the implementation to be tested. Use the whole variable name as key for the dict,
+            format_dict (``dict``): (``input_method="stdio"``) A dictionary containing functions to convert the
+                variables mentioned in the command kwarg from their usual Python representation to any arbitrary format
+                expected by the implementation to be tested. Use the whole variable name as key for the dict,
                 e.g. ``{"$SEED$": <function>}``.
-            parser (dict): (``input_method="read_files"``) A dict containing generators to parse the files, i.e.,
+            parser (``dict``): (``input_method="read_files"``) A dict containing generators to parse the files, i.e.,
                 ``{"input": <generator_input>, "seed": <generator_seed>, "output": <generator_output>}``.
                 Check the examples below.
-            custom_class (class): (``input_method="custom"``) An implementation class for the provided
+            custom_class (``class``): (``input_method="custom"``) An implementation class for the provided
                 :obj:`ValidatorCustomClassAbs` abstract class. Check the documentation of the abstract class for more
                 details about what you should implement. Check the examples below and the use cases subsection in the
                 documentation for real scenarios using the "custom" ``input_method``.
@@ -399,17 +399,17 @@ class Validator:
         method does not return anything, but it updates the keys "validated" and "valid"
 
         Keyword Arguments:
-            mode (str): This only affects implementations with ``input_method="stdio"``. Two modes are available:
+            mode (``str``): This only affects implementations with ``input_method="stdio"``. Two modes are available:
                 "random" and "brute-force". Random tests take seeds and inputs uniformly at random and compares the
                 output of the reference implementation with the added implementation(s)
-            sample_size (int): (``mode="random"``) The number of random inputs and seeds that will be used to validate
-                the implementations added with ``input_method="stdio"``
-            max_attempts (int | str): (``mode="brute-force"``) The max number of testing rounds. Use
+            sample_size (``int``): (``mode="random"``) The number of random inputs and seeds that will be used to
+                validate the implementations added with ``input_method="stdio"``
+            max_attempts (``int`` | ``str``): (``mode="brute-force"``) The max number of testing rounds. Use
                 ``max_attempts="all"`` if you want to run an exhaustive brute-force testing trying all possible input
                 and seeds.
-            rng (int | Generator | None): (``mode="random"``) Seed to initialize the NumPy RNG or, alternatively, an
-                already initialized Generator, e.g. ``numpy.random.default_rng(1337)``. This only affects
-                implementations with ``input_method="stdio"``
+            rng (``int`` | ``Generator`` | ``None``): (``mode="random"``) Seed to initialize the NumPy RNG or,
+                alternatively, an already initialized ``Generator``, e.g. ``numpy.random.default_rng(1337)``. This only
+                affects implementations with ``input_method="stdio"``
         """
         for label in self._implementations:
             impl = self._implementations[label]
@@ -548,27 +548,27 @@ class Validator:
 
     def generate_test_vector(self, output_filename: str | Path, number_tests: int, mode: str = "rsp", **kwargs) -> None:
         r"""
-        It generates CAVP-alike random test vectors compatible with the randomness extractor used to instantiate the
+        It generates `CAVP-alike`_ random test vectors compatible with the randomness extractor used to instantiate the
         :obj:`Validator` class. The function can be used to generate "request" files (.req) or "response" files (.rsp).
         The difference is that the request files only contain the input bit strings, while the response files also
         contain the expected output of the extractor. By default, response files are generated.
 
+        .. _CAVP-alike: https://csrc.nist.gov/Projects/Cryptographic-Algorithm-Validation-Program
+
         Arguments:
-            output_filename: The name of the output file (or a `pathlib.Path` object) to store the test vectors.
+            output_filename: The name of the output file (or a ``pathlib.Path`` object) to store the test vectors.
             number_tests: Number of tests to store in the output file.
             mode: Either ``"req"`` for request files, containing just the input for the extractor, or ``"rsp"`` for
                 response files, containing both the inputs and the expected output.
 
         Keyword Arguments:
-            overwrite (bool): Whether to overwrite the output file if it already exists, or not (default).
-            rng (int | Generator | None): Seed to initialize the NumPy RNG or, alternatively, an already initialized
-                Generator, e.g. ``numpy.random.default_rng(1337)``.
+            overwrite (``bool``): Whether to overwrite the output file if it already exists, or not (default).
+            rng (``int`` | ``Generator`` | ``None``): Seed to initialize the NumPy RNG or, alternatively, an already
+                initialized ``Generator``, e.g. ``numpy.random.default_rng(1337)``.
 
         Examples:
-            The test vector ``toeplitz_hashing_testvec_1e6_cr_1_2.rsp`` available in `resources/test_vectors`_ was
-            generated using the following script.
-
-            .. _resources/test_vectors: https://github.com/cryptohslu/randextract/tree/main/resources/test_vectors
+            The following code snippet will generate a file ``toeplitz_hashing_testvec_1e6_cr_1_2.rsp`` containing 8
+            test vectors for the Toeplitz hashing taking inputs of :math:`10^6` and a compression ratio of 1/2.
 
             .. code-block:: python
 
