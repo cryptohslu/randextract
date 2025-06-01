@@ -16,18 +16,22 @@ Our goal is to provide an easy-to-read *reference* library, whose correctness ca
 to validate high performance implementations (usually hardware based) that are more difficult to audit and test.
 
 ## Structure of the repo
-The source code of the library is in `src/randextract`, unit and integration tests in `tests`, and the documentation in
-`docs/source`. Additional tools such as plots, datasets used for testing and the scripts to generate them, Jupyter
-notebooks, etc. are all in `tools`.
 
-## Build & install
+* [`src/randextract`](src/randextract): source code of the library.
+* [`tests`](tests): unit and integration tests.
+* [`docs/source`](docs/source): source code of the online documentation.
+* [`examples`](examples): scripts validating real world privacy amplification implementations.
+* [`resources`](resources): additional resources such as plots, datasets used in testing and the scripts to generate them,
+Jupyter notebooks, test vectors, etc.
+
+## Build & Install
 You can install the latest release of the package using `pip`:
 
 ```bash
 pip install randextract
 ```
 
-You can also install the current dev version cloning this git repo:
+Alternatively, you can install the current dev version cloning this git repo:
 ```bash
 git clone https://github.com/cryptohslu/randextract.git
 cd randextract
@@ -37,6 +41,7 @@ source .venv/bin/activate
 pip install .
 ```
 
+## Documentation
 The documentation is available at https://randextract.crypto-lab.ch.
 
 You can also build the documentation locally:
@@ -44,3 +49,20 @@ You can also build the documentation locally:
 cd docs
 make html
 ```
+
+## Citation & Contact
+If `randextract` was useful to you in your research, please cite us.
+
+### BibTeX
+
+```bibtex
+@software{randextract_2024,
+  title = {randextract: a Reference Library to Test and Validate Privacy Amplification Implementations},
+  author = {Iyán Méndez Veiga and Esther Hänggi},
+  year = {2024},
+  url = {https://github.com/cryptolab/randextract},
+}
+```
+
+If you want to collaborate [with us](https://www.hslu.ch/en/lucerne-school-of-information-technology/research/labs/applied-cyber-security/)
+at the please send us [an email](mailto:iyan.mendezveiga@hslu.ch).
