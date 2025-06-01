@@ -17,9 +17,7 @@ from .utilities.converter import integer_to_binary_array
 from .validator_custom_class import ValidatorCustomClassAbs
 
 # Custom warnings
-warnings.formatwarning = (
-    lambda msg, *args, **kwargs: f"{colored('UserWarning', 'light_red')}: {msg}\n\n"
-)
+warnings.formatwarning = lambda msg, *args, **kwargs: f"{colored('UserWarning', 'light_red')}: {msg}\n\n"
 
 
 class Validator:
@@ -124,9 +122,7 @@ class Validator:
         # "stdio" mode
         if input_method == "stdio":
             if "command" not in kwargs.keys():
-                raise ValueError(
-                    "With input_method='stdio', you should provide, at least, the kwarg 'command'."
-                )
+                raise ValueError("With input_method='stdio', you should provide, at least, the kwarg 'command'.")
 
             command = kwargs["command"]
 
@@ -166,17 +162,13 @@ class Validator:
         # "read_files" mode
         if input_method == "read_files":
             if "parser" not in kwargs.keys():
-                raise ValueError(
-                    "With input_method='read_files', you should provide the kwarg 'parser'."
-                )
+                raise ValueError("With input_method='read_files', you should provide the kwarg 'parser'.")
             parser = kwargs["parser"]
             verify_type(parser, dict)
 
             # Check that parser dict contains the correct keys
             if set(parser.keys()) != {"input", "seed", "output"}:
-                raise ValueError(
-                    "parser should be a dictionary with keys: 'input', 'seed' and 'output'."
-                )
+                raise ValueError("parser should be a dictionary with keys: 'input', 'seed' and 'output'.")
 
             # Check that parser contains generators
             for value in parser.values():
@@ -192,9 +184,7 @@ class Validator:
         # "custom" mode
         if input_method == "custom":
             if "custom_class" not in kwargs.keys():
-                raise ValueError(
-                    "With input_method='custom', you should provide the kwarg 'custom_class'."
-                )
+                raise ValueError("With input_method='custom', you should provide the kwarg 'custom_class'.")
             custom_class = kwargs["custom_class"]
 
             if not isinstance(custom_class, ValidatorCustomClassAbs):
@@ -227,9 +217,7 @@ class Validator:
 
         del self._implementations[label]
 
-    def replace_implementation(
-        self, label: str, input_method: str = "stdio", **kwargs
-    ) -> None:
+    def replace_implementation(self, label: str, input_method: str = "stdio", **kwargs) -> None:
         r"""
         If :obj:`add_implementation()` is used with a label that already exists, a UserWarning is raised. This method
         does exactly the same as :obj:`add_implementation()` but issues no warning.
@@ -437,9 +425,7 @@ class Validator:
                     mode = kwargs["mode"]
                     verify_type(mode, str)
                     if mode not in ["random", "brute-force"]:
-                        raise ValueError(
-                            f"mode can be either 'random' or 'brute-force', but {mode} was given"
-                        )
+                        raise ValueError(f"mode can be either 'random' or 'brute-force', but {mode} was given")
 
                 # "random" testing
                 if mode == "random":
@@ -488,8 +474,7 @@ class Validator:
                 else:
                     if "max_attempts" not in kwargs:
                         warnings.warn(
-                            "mode='brute-force' is used but sample_size not provided. "
-                            + "Using max_attempts='all'",
+                            "mode='brute-force' is used but sample_size not provided. " + "Using max_attempts='all'",
                             UserWarning,
                         )
                         max_attempts = "all"
@@ -497,9 +482,7 @@ class Validator:
                         max_attempts = kwargs["max_attempts"]
 
                     if "rng" in kwargs:
-                        warnings.warn(
-                            "The RNG is not used when mode='brute-force'", UserWarning
-                        )
+                        warnings.warn("The RNG is not used when mode='brute-force'", UserWarning)
 
                     verify_type(max_attempts, [Integral, str])
                     if isinstance(max_attempts, str):
@@ -508,9 +491,7 @@ class Validator:
                                 f"max_attempts can only be an integer or 'all' but {max_attempts} was given."
                             )
                         else:
-                            max_attempts = (
-                                2**self._ext.seed_length * 2**self._ext.input_length
-                            )
+                            max_attempts = 2**self._ext.seed_length * 2**self._ext.input_length
                     else:
                         verify_number_is_positive(max_attempts)
 
@@ -631,12 +612,8 @@ class Validator:
             print("\nExtractor outputs are not equal:")
             mismatched = ref_output != impl_output
             mismatched_percentage = f"{mismatched.sum() / ref_output.size:.1%}"
-            print(
-                f"  Mismatched elements: {mismatched.sum()} / {ref_output.size} ({mismatched_percentage})"
-            )
-            print(
-                f"  Sample of mismatched indices:\n{np.argwhere(mismatched).flatten()}"
-            )
+            print(f"  Mismatched elements: {mismatched.sum()} / {ref_output.size} ({mismatched_percentage})")
+            print(f"  Sample of mismatched indices:\n{np.argwhere(mismatched).flatten()}")
 
         if func is not None:
             if not callable(func):
