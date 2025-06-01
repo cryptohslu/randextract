@@ -1,7 +1,7 @@
 <div align="center">
 <picture>
-  <source srcset="logo/logo-dark-mode.png" media="(prefers-color-scheme: dark)">
-  <img width=500px alt="randExtract logo" src="logo/logo-light-mode.png">
+  <source srcset="https://github.com/cryptohslu/randextract/blob/main/logo/logo-dark-mode.png?raw=true" media="(prefers-color-scheme: dark)">
+  <img width=500px alt="randExtract logo" src="https://github.com/cryptohslu/randextract/blob/main/logo/logo-light-mode.png?raw=true">
 </picture>
 </div>
 <br>
