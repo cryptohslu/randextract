@@ -11,9 +11,9 @@ from galois import GF2
 from numpy.random import Generator, default_rng
 from termcolor import colored, cprint
 
-from ._verify import verify_number_is_positive, verify_number_type, verify_type
+from ._verify import verify_kwargs, verify_number_is_positive, verify_number_type, verify_type
 from .randomness_extractor import RandomnessExtractor
-from .utilities.converter import integer_to_binary_array
+from .utilities.converter import binary_array_to_hex_string, integer_to_binary_array
 from .validator_custom_class import ValidatorCustomClassAbs
 
 # Custom warnings
@@ -404,11 +404,12 @@ class Validator:
                 output of the reference implementation with the added implementation(s)
             sample_size (int): (``mode="random"``) The number of random inputs and seeds that will be used to validate
                 the implementations added with ``input_method="stdio"``
-            max_attempts (int | str): (``mode="brute-force"``) The max number of testing rounds. Use ``max_attempts="all"``
-                if you want to run an exhaustive brute-force testing trying all possible input and seeds.
+            max_attempts (int | str): (``mode="brute-force"``) The max number of testing rounds. Use
+                ``max_attempts="all"`` if you want to run an exhaustive brute-force testing trying all possible input
+                and seeds.
             rng (int | Generator | None): (``mode="random"``) Seed to initialize the NumPy RNG or, alternatively, an
-                already initialized Generator, e.g. ``numpy.random.default_rng(1337)``. This only affects implementations with
-                ``input_method="stdio"``
+                already initialized Generator, e.g. ``numpy.random.default_rng(1337)``. This only affects
+                implementations with ``input_method="stdio"``
         """
         for label in self._implementations:
             impl = self._implementations[label]
@@ -544,6 +545,101 @@ class Validator:
                 impl["valid"] = False
 
         self.__update_all_passed()
+
+    def generate_test_vector(self, output_filename: str | Path, number_tests: int, mode: str = "rsp", **kwargs) -> None:
+        r"""
+        It generates CAVP-alike random test vectors compatible with the randomness extractor used to instantiate the
+        :obj:`Validator` class. The function can be used to generate "request" files (.req) or "response" files (.rsp).
+        The difference is that the request files only contain the input bit strings, while the response files also
+        contain the expected output of the extractor. By default, response files are generated.
+
+        Arguments:
+            output_filename: The name of the output file (or a `pathlib.Path` object) to store the test vectors.
+            number_tests: Number of tests to store in the output file.
+            mode: Either ``"req"`` for request files, containing just the input for the extractor, or ``"rsp"`` for
+                response files, containing both the inputs and the expected output.
+
+        Keyword Arguments:
+            overwrite (bool): Whether to overwrite the output file if it already exists, or not (default).
+            rng (int | Generator | None): Seed to initialize the NumPy RNG or, alternatively, an already initialized
+                Generator, e.g. ``numpy.random.default_rng(1337)``.
+
+        Examples:
+            The test vector ``toeplitz_hashing_testvec_1e6_cr_1_2.rsp`` available in `resources/test_vectors`_ was
+            generated using the following script.
+
+            .. _resources/test_vectors: https://github.com/cryptohslu/randextract/tree/main/resources/test_vectors
+
+            .. code-block:: python
+
+                from randextract import ToeplitzHashing, Validator
+
+                ref_ext = ToeplitzHashing(10**6, 5*10**5)
+                val = Validator(ref_ext)
+                val.generate_test_vector(
+                    output_filename="toeplitz_hashing_testvec_1e6_cr_1_2.rsp",
+                    number_tests=8,
+                    mode="rsp",
+                )
+
+        """
+        verify_type(output_filename, [str, Path])
+        verify_number_type(number_tests, Integral)
+        verify_number_is_positive(number_tests)
+        verify_type(mode, str)
+        verify_kwargs(kwargs, optional_args=["overwrite", "rng"])
+
+        if mode not in ("req", "rsp"):
+            raise ValueError(f"Mode can only take values 'req' or 'rsp', but {mode} was passed.")
+
+        if isinstance(output_filename, str):
+            out = Path(Path.cwd() / output_filename)
+        else:
+            out = output_filename
+
+        if "overwrite" in kwargs:
+            overwrite = kwargs.get("overwrite")
+            verify_type(overwrite, bool)
+        else:
+            overwrite = False
+
+        if "rng" in kwargs:
+            rng = kwargs.get("rng")
+            verify_type(rng, [int, Generator])
+            rng = default_rng(rng)
+        else:
+            rng = default_rng()
+
+        if out.exists() and not overwrite:
+            raise ValueError(
+                f"File {out.name} already exists. To overwrite it call the function with argument overwrite=True"
+            )
+
+        with open(out, "w") as file:
+            file.write(
+                f"""# CAVS
+# {type(self._ext).__name__}
+# Input Length : {self._ext.input_length}
+# Compression ratio: {round(self._ext.output_length / self._ext.input_length, 2)}
+# Generated on {datetime.datetime.now(datetime.timezone.utc):%a %B %d %H:%M:%S %Y (UTC)}
+
+[EXTRACT]
+"""
+            )
+            for i in range(number_tests):
+                file.write(f"COUNT = {i}\n")
+
+                ext_input = GF2.Random(self._ext.input_length, seed=rng)
+                file.write(f"INPUT = {binary_array_to_hex_string(ext_input)}\n")
+
+                ext_seed = GF2.Random(self._ext.seed_length, seed=rng)
+                file.write(f"SEED = {binary_array_to_hex_string(ext_seed)}\n")
+
+                if mode == "rsp":
+                    ext_output = self._ext.extract(ext_input, ext_seed)
+                    file.write(f"OUTPUT = {binary_array_to_hex_string(ext_output)}\n")
+
+                file.write("\n")
 
     @staticmethod
     def analyze_failed_test(
