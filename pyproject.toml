@@ -32,11 +32,12 @@ Issues = "https://github.com/cryptolab/randextract/issues"
 
 [project.optional-dependencies]
 dev = [
+    "black",
+    "build",
+    "isort",
     "jupyterlab",
     "matplotlib",
-    "black",
     "twine",
-    "isort",
 ]
 docs = [
     "Sphinx",
