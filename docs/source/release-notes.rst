@@ -13,6 +13,12 @@ with previous releases. Patch versions make backwards-compatible bug fixes.
 .. _semantic versioning: https://semver.org/
 
 ------
+v0.1.1
+------
+
+- Add suport for Python 3.13
+
+------
 v0.1.0
 ------
 
