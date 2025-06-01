@@ -11,13 +11,13 @@ authors = [
     {name = "Iyán Méndez Veiga", email = "iyan.mendezveiga@hslu.ch"},
 ]
 dependencies = [
-    "numpy>=1.25,<2.1",
-    "galois>=0.3.6",
-    "scipy>=1.12",
-    "gmpy2<3,>=2.2.0a1",
-    "termcolor>=2.4",
+    "numpy >= 1.21.0",
+    "galois >= 0.3.6",
+    "scipy >= 1.12",
+    "gmpy2 >=2.2.0a1, <3",
+    "termcolor >= 2.4",
 ]
-requires-python = ">=3.10, <3.13"
+requires-python = ">=3.10, <3.14"
 license = {file = "LICENSE"}
 readme = "README.md"
 classifiers = [
