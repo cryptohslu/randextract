@@ -4,25 +4,26 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "randextract"
-version = "0.1.0"
+version = "0.1.1"
 description = "A reference implementation for testing & validating Privacy Amplification algorithms"
 authors = [
     {name = "Esther Hänggi", email = "esther.haenggi@hslu.ch"},
     {name = "Iyán Méndez Veiga", email = "iyan.mendezveiga@hslu.ch"},
 ]
 dependencies = [
-    "numpy>=1.25,<2.1",
-    "galois>=0.3.6",
-    "scipy>=1.12",
-    "gmpy2<3,>=2.2.0a1",
-    "termcolor>=2.4",
+    "numpy >= 1.21.0",
+    "galois >= 0.3.6",
+    "scipy >= 1.12",
+    "gmpy2 >=2.2.0a1, <3",
+    "termcolor >= 2.4",
 ]
-requires-python = ">=3.10, <3.13"
-license = {file = "LICENSE"}
+requires-python = ">=3.10, <3.14"
+license = "MIT"
+license-files = ["LICENSE"]
 readme = "README.md"
+keywords = ["Quantum Cryptography", "Randomness Extractor", "Privacy Amplification"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 
@@ -32,11 +33,12 @@ Issues = "https://github.com/cryptolab/randextract/issues"
 
 [project.optional-dependencies]
 dev = [
+    "black",
+    "build",
+    "isort",
     "jupyterlab",
     "matplotlib",
-    "black",
     "twine",
-    "isort",
 ]
 docs = [
     "Sphinx",
