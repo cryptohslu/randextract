@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "RandExtract"
-copyright = "2024, HSLU"
+copyright = "2025, HSLU"
 author = "Iyán Méndez Veiga"
 release = "0.1.0"
 
@@ -25,7 +25,7 @@ extensions = [
     "sphinx_tabs.tabs",
     "sphinx_togglebutton",
 ]
-source_suffix = {'.rst': 'restructuredtext'}
+source_suffix = {".rst": "restructuredtext"}
 bibtex_bibfiles = ["references.bib"]
 bibtex_default_style = "unsrt"
 bibtex_reference_style = "label"
