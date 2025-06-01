@@ -18,11 +18,12 @@ dependencies = [
     "termcolor >= 2.4",
 ]
 requires-python = ">=3.10, <3.14"
-license = {file = "LICENSE"}
+license = "MIT"
+license-files = ["LICENSE"]
 readme = "README.md"
+keywords = ["Quantum Cryptography", "Randomness Extractor", "Privacy Amplification"]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 
