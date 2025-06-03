@@ -13,6 +13,14 @@ with previous releases. Patch versions make backwards-compatible bug fixes.
 .. _semantic versioning: https://semver.org/
 
 ------
+v0.2.0
+------
+
+- Add new method ``generate_test_vector()`` to :obj:`Validator` to create CAVP-alike test vectors
+- Include examples of test vectors for Toeplitz hashing
+- Update repo structure and citation to match `arXiv preprint <https://arxiv.org/abs/2506.00124>`_
+
+------
 v0.1.1
 ------
 
