@@ -13,6 +13,18 @@ with previous releases. Patch versions make backwards-compatible bug fixes.
 .. _semantic versioning: https://semver.org/
 
 ------
+v0.2.2
+------
+
+- Add missing module that got lost when migrating from internal private repo
+
+------
+v0.2.1
+------
+
+- Fix logo paths in PyPI
+
+------
 v0.2.0
 ------
 

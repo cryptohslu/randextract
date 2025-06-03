@@ -8,7 +8,7 @@ authors:
   given-names: "Esther"
   orcid: "https://orcid.org/0000-0002-9760-8535"
 title: "randextract"
-version: 0.2.0
+version: 0.2.2
 url: "https://github.com/crytpolab/randextract"
 preferred-citation:
   type: misc
