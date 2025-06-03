@@ -53,9 +53,12 @@ Citation
 
 .. code-block:: bibtex
 
-   @software{randextract_2024,
-       title = {{randextract: A reference Python package for testing & validating Privacy Amplification implementations}},
-       author = {Iyán Méndez Veiga and Esther Hänggi},
-       year = {2024},
-       url = {https://github.com/cryptolab/randextract},
+   @misc{randextract,
+      title={randextract: a Reference Library to Test and Validate Privacy Amplification Implementations},
+      author={Iyán Méndez Veiga and Esther Hänggi},
+      year={2025},
+      eprint={2506.00124},
+      archivePrefix={arXiv},
+      primaryClass={quant-ph},
+      url={https://arxiv.org/abs/2506.00124},
    }

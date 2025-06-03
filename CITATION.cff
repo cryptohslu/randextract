@@ -6,6 +6,23 @@ authors:
   orcid: "https://orcid.org/0009-0004-8249-4661"
 - family-names: "Hänggi"
   given-names: "Esther"
+  orcid: "https://orcid.org/0000-0002-9760-8535"
 title: "randextract"
-version: 0.1.0
+version: 0.2.0
 url: "https://github.com/crytpolab/randextract"
+preferred-citation:
+  type: misc
+  authors:
+  - family-names: "Méndez Veiga"
+    given-names: "Iyán"
+    orcid: "https://orcid.org/0009-0004-8249-4661"
+  - family-names: "Hänggi"
+    given-names: "Esther"
+    orcid: "https://orcid.org/0000-0002-9760-8535"
+  title: "randextract: a Reference Library to Test and Validate Privacy Amplification Implementations"
+  year: 2025
+  eprint: "2506.00124"
+  archivePrefix: "arXiv"
+  primaryClass: "quant-ph"
+  doi: "10.48550/arXiv.2506.00124"
+  url: "https://arxiv.org/abs/2506.00124"
