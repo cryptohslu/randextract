@@ -11,15 +11,13 @@ from galois import GF2
 from numpy.random import Generator, default_rng
 from termcolor import colored, cprint
 
-from ._verify import verify_number_is_positive, verify_number_type, verify_type
+from ._verify import verify_kwargs, verify_number_is_positive, verify_number_type, verify_type
 from .randomness_extractor import RandomnessExtractor
-from .utilities.converter import integer_to_binary_array
+from .utilities.converter import binary_array_to_hex_string, integer_to_binary_array
 from .validator_custom_class import ValidatorCustomClassAbs
 
 # Custom warnings
-warnings.formatwarning = (
-    lambda msg, *args, **kwargs: f"{colored('UserWarning', 'light_red')}: {msg}\n\n"
-)
+warnings.formatwarning = lambda msg, *args, **kwargs: f"{colored('UserWarning', 'light_red')}: {msg}\n\n"
 
 
 class Validator:
@@ -83,19 +81,19 @@ class Validator:
                 details.
 
         Keyword Arguments:
-            command (str): (``input_method="stdio"``) Provide the command that gives the output hash to compare with the
-                reference implementation. You can use the following variables in your command: ``$INPUT_LENGTH$``,
+            command (``str``): (``input_method="stdio"``) Provide the command that gives the output hash to compare with
+                the reference implementation. You can use the following variables in your command: ``$INPUT_LENGTH$``,
                 ``$OUTPUT_LENGTH$``, ``$SEED$``, ``$INPUT$``. By default, ``$INPUT_LENGTH$`` and ``$OUTPUT_LENGTH$``
                 are passed as strings, and ``$SEED$`` and ``$INPUT$`` as bit strings (without spaces). If you want any
                 other format, check the :obj:`format_dict` kwarg.
-            format_dict (dict): (``input_method="stdio"``) A dictionary containing functions to convert the variables
-                mentioned in the command kwarg from their usual Python representation to any arbitrary format expected
-                by the implementation to be tested. Use the whole variable name as key for the dict,
+            format_dict (``dict``): (``input_method="stdio"``) A dictionary containing functions to convert the
+                variables mentioned in the command kwarg from their usual Python representation to any arbitrary format
+                expected by the implementation to be tested. Use the whole variable name as key for the dict,
                 e.g. ``{"$SEED$": <function>}``.
-            parser (dict): (``input_method="read_files"``) A dict containing generators to parse the files, i.e.,
+            parser (``dict``): (``input_method="read_files"``) A dict containing generators to parse the files, i.e.,
                 ``{"input": <generator_input>, "seed": <generator_seed>, "output": <generator_output>}``.
                 Check the examples below.
-            custom_class (class): (``input_method="custom"``) An implementation class for the provided
+            custom_class (``class``): (``input_method="custom"``) An implementation class for the provided
                 :obj:`ValidatorCustomClassAbs` abstract class. Check the documentation of the abstract class for more
                 details about what you should implement. Check the examples below and the use cases subsection in the
                 documentation for real scenarios using the "custom" ``input_method``.
@@ -124,9 +122,7 @@ class Validator:
         # "stdio" mode
         if input_method == "stdio":
             if "command" not in kwargs.keys():
-                raise ValueError(
-                    "With input_method='stdio', you should provide, at least, the kwarg 'command'."
-                )
+                raise ValueError("With input_method='stdio', you should provide, at least, the kwarg 'command'.")
 
             command = kwargs["command"]
 
@@ -166,17 +162,13 @@ class Validator:
         # "read_files" mode
         if input_method == "read_files":
             if "parser" not in kwargs.keys():
-                raise ValueError(
-                    "With input_method='read_files', you should provide the kwarg 'parser'."
-                )
+                raise ValueError("With input_method='read_files', you should provide the kwarg 'parser'.")
             parser = kwargs["parser"]
             verify_type(parser, dict)
 
             # Check that parser dict contains the correct keys
             if set(parser.keys()) != {"input", "seed", "output"}:
-                raise ValueError(
-                    "parser should be a dictionary with keys: 'input', 'seed' and 'output'."
-                )
+                raise ValueError("parser should be a dictionary with keys: 'input', 'seed' and 'output'.")
 
             # Check that parser contains generators
             for value in parser.values():
@@ -192,9 +184,7 @@ class Validator:
         # "custom" mode
         if input_method == "custom":
             if "custom_class" not in kwargs.keys():
-                raise ValueError(
-                    "With input_method='custom', you should provide the kwarg 'custom_class'."
-                )
+                raise ValueError("With input_method='custom', you should provide the kwarg 'custom_class'.")
             custom_class = kwargs["custom_class"]
 
             if not isinstance(custom_class, ValidatorCustomClassAbs):
@@ -227,9 +217,7 @@ class Validator:
 
         del self._implementations[label]
 
-    def replace_implementation(
-        self, label: str, input_method: str = "stdio", **kwargs
-    ) -> None:
+    def replace_implementation(self, label: str, input_method: str = "stdio", **kwargs) -> None:
         r"""
         If :obj:`add_implementation()` is used with a label that already exists, a UserWarning is raised. This method
         does exactly the same as :obj:`add_implementation()` but issues no warning.
@@ -411,16 +399,17 @@ class Validator:
         method does not return anything, but it updates the keys "validated" and "valid"
 
         Keyword Arguments:
-            mode (str): This only affects implementations with ``input_method="stdio"``. Two modes are available:
+            mode (``str``): This only affects implementations with ``input_method="stdio"``. Two modes are available:
                 "random" and "brute-force". Random tests take seeds and inputs uniformly at random and compares the
                 output of the reference implementation with the added implementation(s)
-            sample_size (int): (``mode="random"``) The number of random inputs and seeds that will be used to validate
-                the implementations added with ``input_method="stdio"``
-            max_attempts (int | str): (``mode="brute-force"``) The max number of testing rounds. Use ``max_attempts="all"``
-                if you want to run an exhaustive brute-force testing trying all possible input and seeds.
-            rng (int | Generator | None): (``mode="random"``) Seed to initialize the NumPy RNG or, alternatively, an
-                already initialized Generator, e.g. ``numpy.random.default_rng(1337)``. This only affects implementations with
-                ``input_method="stdio"``
+            sample_size (``int``): (``mode="random"``) The number of random inputs and seeds that will be used to
+                validate the implementations added with ``input_method="stdio"``
+            max_attempts (``int`` | ``str``): (``mode="brute-force"``) The max number of testing rounds. Use
+                ``max_attempts="all"`` if you want to run an exhaustive brute-force testing trying all possible input
+                and seeds.
+            rng (``int`` | ``Generator`` | ``None``): (``mode="random"``) Seed to initialize the NumPy RNG or,
+                alternatively, an already initialized ``Generator``, e.g. ``numpy.random.default_rng(1337)``. This only
+                affects implementations with ``input_method="stdio"``
         """
         for label in self._implementations:
             impl = self._implementations[label]
@@ -437,9 +426,7 @@ class Validator:
                     mode = kwargs["mode"]
                     verify_type(mode, str)
                     if mode not in ["random", "brute-force"]:
-                        raise ValueError(
-                            f"mode can be either 'random' or 'brute-force', but {mode} was given"
-                        )
+                        raise ValueError(f"mode can be either 'random' or 'brute-force', but {mode} was given")
 
                 # "random" testing
                 if mode == "random":
@@ -488,8 +475,7 @@ class Validator:
                 else:
                     if "max_attempts" not in kwargs:
                         warnings.warn(
-                            "mode='brute-force' is used but sample_size not provided. "
-                            + "Using max_attempts='all'",
+                            "mode='brute-force' is used but sample_size not provided. " + "Using max_attempts='all'",
                             UserWarning,
                         )
                         max_attempts = "all"
@@ -497,9 +483,7 @@ class Validator:
                         max_attempts = kwargs["max_attempts"]
 
                     if "rng" in kwargs:
-                        warnings.warn(
-                            "The RNG is not used when mode='brute-force'", UserWarning
-                        )
+                        warnings.warn("The RNG is not used when mode='brute-force'", UserWarning)
 
                     verify_type(max_attempts, [Integral, str])
                     if isinstance(max_attempts, str):
@@ -508,9 +492,7 @@ class Validator:
                                 f"max_attempts can only be an integer or 'all' but {max_attempts} was given."
                             )
                         else:
-                            max_attempts = (
-                                2**self._ext.seed_length * 2**self._ext.input_length
-                            )
+                            max_attempts = 2**self._ext.seed_length * 2**self._ext.input_length
                     else:
                         verify_number_is_positive(max_attempts)
 
@@ -563,6 +545,101 @@ class Validator:
                 impl["valid"] = False
 
         self.__update_all_passed()
+
+    def generate_test_vector(self, output_filename: str | Path, number_tests: int, mode: str = "rsp", **kwargs) -> None:
+        r"""
+        It generates `CAVP-alike`_ random test vectors compatible with the randomness extractor used to instantiate the
+        :obj:`Validator` class. The function can be used to generate "request" files (.req) or "response" files (.rsp).
+        The difference is that the request files only contain the input bit strings, while the response files also
+        contain the expected output of the extractor. By default, response files are generated.
+
+        .. _CAVP-alike: https://csrc.nist.gov/Projects/Cryptographic-Algorithm-Validation-Program
+
+        Arguments:
+            output_filename: The name of the output file (or a ``pathlib.Path`` object) to store the test vectors.
+            number_tests: Number of tests to store in the output file.
+            mode: Either ``"req"`` for request files, containing just the input for the extractor, or ``"rsp"`` for
+                response files, containing both the inputs and the expected output.
+
+        Keyword Arguments:
+            overwrite (``bool``): Whether to overwrite the output file if it already exists, or not (default).
+            rng (``int`` | ``Generator`` | ``None``): Seed to initialize the NumPy RNG or, alternatively, an already
+                initialized ``Generator``, e.g. ``numpy.random.default_rng(1337)``.
+
+        Examples:
+            The following code snippet will generate a file ``toeplitz_hashing_testvec_1e6_cr_1_2.rsp`` containing 8
+            test vectors for the Toeplitz hashing taking inputs of :math:`10^6` and a compression ratio of 1/2.
+
+            .. code-block:: python
+
+                from randextract import ToeplitzHashing, Validator
+
+                ref_ext = ToeplitzHashing(10**6, 5*10**5)
+                val = Validator(ref_ext)
+                val.generate_test_vector(
+                    output_filename="toeplitz_hashing_testvec_1e6_cr_1_2.rsp",
+                    number_tests=8,
+                    mode="rsp",
+                )
+
+        """
+        verify_type(output_filename, [str, Path])
+        verify_number_type(number_tests, Integral)
+        verify_number_is_positive(number_tests)
+        verify_type(mode, str)
+        verify_kwargs(kwargs, optional_args=["overwrite", "rng"])
+
+        if mode not in ("req", "rsp"):
+            raise ValueError(f"Mode can only take values 'req' or 'rsp', but {mode} was passed.")
+
+        if isinstance(output_filename, str):
+            out = Path(Path.cwd() / output_filename)
+        else:
+            out = output_filename
+
+        if "overwrite" in kwargs:
+            overwrite = kwargs.get("overwrite")
+            verify_type(overwrite, bool)
+        else:
+            overwrite = False
+
+        if "rng" in kwargs:
+            rng = kwargs.get("rng")
+            verify_type(rng, [int, Generator])
+            rng = default_rng(rng)
+        else:
+            rng = default_rng()
+
+        if out.exists() and not overwrite:
+            raise ValueError(
+                f"File {out.name} already exists. To overwrite it call the function with argument overwrite=True"
+            )
+
+        with open(out, "w") as file:
+            file.write(
+                f"""# CAVS
+# {type(self._ext).__name__}
+# Input Length : {self._ext.input_length}
+# Compression ratio: {round(self._ext.output_length / self._ext.input_length, 2)}
+# Generated on {datetime.datetime.now(datetime.timezone.utc):%a %B %d %H:%M:%S %Y (UTC)}
+
+[EXTRACT]
+"""
+            )
+            for i in range(number_tests):
+                file.write(f"COUNT = {i}\n")
+
+                ext_input = GF2.Random(self._ext.input_length, seed=rng)
+                file.write(f"INPUT = {binary_array_to_hex_string(ext_input)}\n")
+
+                ext_seed = GF2.Random(self._ext.seed_length, seed=rng)
+                file.write(f"SEED = {binary_array_to_hex_string(ext_seed)}\n")
+
+                if mode == "rsp":
+                    ext_output = self._ext.extract(ext_input, ext_seed)
+                    file.write(f"OUTPUT = {binary_array_to_hex_string(ext_output)}\n")
+
+                file.write("\n")
 
     @staticmethod
     def analyze_failed_test(
@@ -631,12 +708,8 @@ class Validator:
             print("\nExtractor outputs are not equal:")
             mismatched = ref_output != impl_output
             mismatched_percentage = f"{mismatched.sum() / ref_output.size:.1%}"
-            print(
-                f"  Mismatched elements: {mismatched.sum()} / {ref_output.size} ({mismatched_percentage})"
-            )
-            print(
-                f"  Sample of mismatched indices:\n{np.argwhere(mismatched).flatten()}"
-            )
+            print(f"  Mismatched elements: {mismatched.sum()} / {ref_output.size} ({mismatched_percentage})")
+            print(f"  Sample of mismatched indices:\n{np.argwhere(mismatched).flatten()}")
 
         if func is not None:
             if not callable(func):

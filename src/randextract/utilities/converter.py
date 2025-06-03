@@ -57,9 +57,7 @@ def entropy_extraction_ratio_and_output_length_conversion(
         # if entropy_extraction_ratio is specified, ignore output_length
         assert isinstance(entropy_extraction_ratio, float)
         assert 0 < entropy_extraction_ratio < 1
-        output_length = math.floor(
-            entropy_extraction_ratio * relative_source_entropy * input_length
-        )
+        output_length = math.floor(entropy_extraction_ratio * relative_source_entropy * input_length)
     else:
         # use output_length
         assert isinstance(output_length, int), "output_length must be an int."
@@ -67,9 +65,7 @@ def entropy_extraction_ratio_and_output_length_conversion(
         assert output_length <= math.floor(
             relative_source_entropy * input_length
         ), "output_length must be at most the available absolute source entropy."
-        entropy_extraction_ratio = output_length / (
-            relative_source_entropy * input_length
-        )
+        entropy_extraction_ratio = output_length / (relative_source_entropy * input_length)
 
     return entropy_extraction_ratio, output_length
 
@@ -82,17 +78,13 @@ def binary_array_to_integer(array: GF2) -> int:
         return array.item()
 
     try:
-        n = int.from_bytes(
-            np.packbits(np.array(array[::-1]), bitorder="little").tobytes(), "little"
-        )
+        n = int.from_bytes(np.packbits(np.array(array[::-1]), bitorder="little").tobytes(), "little")
     except ValueError as e:
         # Temporarily disabling limiting conversion size due to CVE-2020-10735
         if not hasattr(sys, "set_int_max_str_digits"):
             raise ValueError(e)
         sys.set_int_max_str_digits(0)
-        n = int.from_bytes(
-            np.packbits(np.array(array[::-1]), bitorder="little").tobytes(), "little"
-        )
+        n = int.from_bytes(np.packbits(np.array(array[::-1]), bitorder="little").tobytes(), "little")
         sys.set_int_max_str_digits(sys.int_info.default_max_str_digits)
 
     return n
@@ -108,3 +100,11 @@ def integer_to_binary_array(num: int, pad: int = None) -> GF2:
         pad = 0
 
     return GF2(np.frombuffer(f"{num:0{pad}b}".encode(), dtype=np.uint8) - ord("0"))
+
+
+def binary_array_to_hex_string(array: GF2) -> str:
+    assert isinstance(array, GF2)
+    assert len(array.shape) <= 1, "input must be one dimensional"
+
+    size_bytes = math.ceil(array.size / 8)
+    return int("".join([str(_) for _ in np.array(array).tolist()]), 2).to_bytes(size_bytes).hex()

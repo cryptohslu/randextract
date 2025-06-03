@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "randextract"
-version = "0.1.1"
+version = "0.2.0"
 description = "A reference implementation for testing & validating Privacy Amplification algorithms"
 authors = [
     {name = "Esther Hänggi", email = "esther.haenggi@hslu.ch"},
@@ -62,5 +62,9 @@ pythonpath = [
   "src"
 ]
 
+[tool.black]
+line-length = 120
+
 [tool.isort]
 profile = "black"
+line_length = 120
